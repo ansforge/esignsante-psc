@@ -1,0 +1,8 @@
+
+# /
+/*.settings
+/*.classpath
+/*.project
+/*.back
+/target/
+/logs
