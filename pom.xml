@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.6</version>
+		<relativePath />
+	</parent>
+	<groupId>fr.ans.sign</groupId>
+	<artifactId>esignsante-psc</artifactId>
+	<version>1.0.8-SNAPSHOT</version>
+	<name>esignsante-psc</name>
+
+	<packaging>jar</packaging>
+
+	<scm>
+		<developerConnection>${developperConnectionJenkinsfile}</developerConnection>
+	  <tag>HEAD</tag>
+  </scm>
+
+	<description>webservice REST de signature à partir d'un jeton prosante connect</description>
+	<properties>
+		<springfox-version>3.0.0</springfox-version>
+		<jackson-version>2.12.3</jackson-version>
+		<start-class>fr.ans.sign.esignsantepsc.EsignsantePscApplication</start-class>
+		<dist>docker</dist>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<embededMongoDownloadUrl>http://fastdl.mongodb.org/</embededMongoDownloadUrl>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-to-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.restdocs</groupId>
+			<artifactId>spring-restdocs-mockmvc</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- OPENAPI et ses dependences -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-core</artifactId>
+			<version>${springfox-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0.1-jre</version>
+		</dependency>
+
+		<!-- XML processing: Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.joschi.jackson</groupId>
+			<artifactId>jackson-datatype-threetenbp</artifactId>
+			<!-- version 2.12.2 KO -->
+			<version>2.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
+		<!-- FIN OPENAPI et ces dependences -->
+
+		<!-- client esignsante -->
+		<dependency>
+			<groupId>fr.ans.esignsante</groupId>
+			<artifactId>esignsante-java-client</artifactId>
+			<version>2.5.11</version>
+		</dependency>
+
+		<!-- vérification du type de fichier transmis -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<includes>
+					<include>*.yaml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<excludes>
+					<exclude>*.yaml</exclude>
+				</excludes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources/</directory>
+			</testResource>
+		</testResources>
+
+		<plugins>
+			<!-- Generation doc par Spring restdocs -->
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>2.1.0</version>
+
+				<executions>
+					<execution>
+						<id>generated-output-html</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+
+						<configuration>
+							<!-- ce fichier doit être dans src/main/asciidoc qui doit contenir 
+								les snippets à intégrer -->
+							<sourceDocumentName>esignsante-psc-api.adoc</sourceDocumentName>
+
+							<backend>html</backend>
+							<doctype>book</doctype>
+							<attributes>
+								<toc>left</toc>
+								<icons>font</icons>
+								<sectanchors>true</sectanchors>
+								<!-- set the idprefix to blank -->
+								<idprefix />
+								<snippets>${project.build.directory}/generated-snippets</snippets>
+							</attributes>
+						</configuration>
+
+					</execution>
+				</executions>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.restdocs</groupId>
+						<artifactId>spring-restdocs-asciidoctor</artifactId>
+						<version>${spring-restdocs.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>5.2.0</version>
+				<executions>
+					<execution>
+						<!-- Déplacement pour exécuter la génération après la mise à jour du 
+							numéro de version -->
+						<phase>process-resources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+
+						<configuration>
+							<inputSpec>${project.basedir}/target/classes/esignsante-psc.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<library>spring-boot</library>
+							<ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+
+							<additionalProperties>
+								<additionalProperty />
+							</additionalProperties>
+							<configOptions>
+								<basePackage>fr.ans.api.sign.esignsante.psc</basePackage>
+								<configPackage>fr.ans.api.sign.esignsante.psc.config</configPackage>
+								<modelPackage>fr.ans.api.sign.esignsante.psc.model</modelPackage>
+								<apiPackage>fr.ans.api.sign.esignsante.psc.api</apiPackage>
+								<sourceFolder>src/main/java</sourceFolder>
+								<dateLibrary>threetenbp</dateLibrary>
+								<delegatePattern>true</delegatePattern>
+								<useBeanValidation>true</useBeanValidation>
+								<skipOverwrite>true</skipOverwrite>
+								<disableHtmlEscaping>true</disableHtmlEscaping>
+
+							</configOptions>
+							<withXml>true</withXml>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.outputDirectory}/static/docs
+							</outputDirectory>
+							<resources>
+								<resource>
+									<directory>
+										${project.build.directory}/generated-docs
+									</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>2.1.0</version>
+				<configuration>
+
+					<from>
+						<image>${docker.registry}/openjdk:16-slim-buster</image>
+					</from>
+					<to>
+						<image>${image.registry}/cybersante/esignsante-psc</image>
+						<tags>
+							<tag>latest</tag>
+							<tag>${project.version}</tag>
+						</tags>
+						<auth>
+							<username>jenkins</username>
+							<password>${jenkins.password}</password>
+						</auth>
+					</to>
+					<container>
+						<user>daemon:daemon</user>
+						<mainClass>fr.ans.sign.esignsantepsc.EsignsantePscApplication</mainClass>
+						<ports>
+							<port>8080</port>
+						</ports>
+						<format>Docker</format>
+						<!--this sacrifices reproducibility since the timestamp will change 
+							with every build -->
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+					</container>
+					<allowInsecureRegistries>true</allowInsecureRegistries>
+				</configuration>
+			</plugin>
+
+			<!-- license pour Hook SVN -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<header>licence-header.txt</header>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<strictCheck>true</strictCheck>
+				</configuration>
+			</plugin>
+
+			<!-- EmbeddedMongoDB pour les tests - ex conf: https://github.com/joelittlejohn/embedmongo-maven-plugin -->
+			<plugin>
+				<groupId>com.github.joelittlejohn.embedmongo</groupId>
+				<artifactId>embedmongo-maven-plugin</artifactId>
+				<version>0.4.2</version>
+				<executions>
+					<execution>
+						<id>start</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<port>27017</port>
+
+							<version>3.4.24</version>
+							<logging>console</logging>
+							<downloadPath>${embededMongoDownloadUrl}</downloadPath>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<!-- ************************* profils *********************************** -->
+	<profiles>
+		<profile>
+			<id>swagger</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>swagger</spring.profiles.active>
+			</properties>
+		</profile>
+
+		<profile>
+			<activation>
+				<os>
+					<family>Linux</family>
+				</os>
+			</activation>
+			<id>jenkins</id>
+			<properties>
+				<artifactory.username>jenkins</artifactory.username>
+				<artifactory.password>password</artifactory.password>
+				<artifactory.hostname>http://st-forge.asipsante.fr:8081</artifactory.hostname>
+				<ldap.server.url>ldap://annuaire-igc.esante.gouv.fr:389</ldap.server.url>
+				<docker.registry>registry.repo.docker.proxy-prod-forge.asip.hst.fluxus.net</docker.registry>
+				<image.registry>registry.repo.docker.proxy-prod-forge.asip.hst.fluxus.net</image.registry>
+				<embededMongoDownloadUrl>http://st-forge.asipsante.fr:8081/artifactory/fastdl.mongodb.org/</embededMongoDownloadUrl>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>artifactory</id>
+					<url>${artifactory.hostname}/artifactory/asip-releases</url>
+				</repository>
+				<snapshotRepository>
+					<id>artifactory</id>
+					<url>${artifactory.hostname}/artifactory/asip-snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>parse-version</id>
+								<goals>
+									<goal>parse-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>3.0.0-M1</version>
+						<configuration>
+							<checkModificationExcludes>
+								<checkModificationExclude>pom.xml</checkModificationExclude>
+								<checkModificationExclude>pom.xml.versionsBackup</checkModificationExclude>
+							</checkModificationExcludes>
+							<tagBase>http://scm-forge.asipsante.fr:18080/svn/esignsante/esignsante-psc/tags</tagBase>
+							<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>waypoint</id>
+			<properties>
+				<artifactory.hostname>http://repo.proxy-dev-forge.asip.hst.fluxus.net</artifactory.hostname>
+				<ldap.server.url>ldap://annuaire-igc.esante.gouv.fr:389</ldap.server.url>
+				<embededMongoDownloadUrl>http://repo.proxy-dev-forge.asip.hst.fluxus.net/artifactory/fastdl.mongodb.org/</embededMongoDownloadUrl>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>parse-version</id>
+								<goals>
+									<goal>parse-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

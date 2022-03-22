@@ -1,0 +1,502 @@
+#(c) Copyright 1998-2021, ANS. All rights reserved.
+openapi: 3.0.0
+info:
+  title: esignsante-psc @project.version@
+  version: '1.0'
+  description: This API can be used to sign PDF or XML documents with an A.N.S X509 certificate
+  contact:
+    email: esignsante@esante.gouv.fr
+servers:
+  - url: 'https://esignsante.psc.esante.gouv.fr/v1'
+    description: Sandbox esignsante.psc
+tags:
+  - name: utils
+  - name: signature
+  - name: checksignature
+paths:
+  /:
+    get:
+      summary: Liste des opérations disponibles
+      tags:
+        - utils
+      responses:
+        '200':
+          description: Requête en succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  $ref: '#/components/schemas/Operation'
+              examples:
+                example-2:
+                  value:
+                    - path: /
+                      description: Liste des opérations disponibles
+                      payload: aucun
+                      requiredHeaders: Accept
+        '400':
+          description: Requête mal formée.
+        '500':
+          description: Erreur interne du serveur.
+      operationId: get-operations
+      description: 'Opération qui permet au client de lister les opérations offertes par le composant eSignSante-PSC.  '
+  /ca:
+    get:
+      summary: Liste des autorités de certification
+      tags:
+        - utils
+      responses:
+        '200':
+          description: Requête en succès.
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Le DN des autorités de la chaîne de confiance utilisée par la plateforme
+                items:
+                  type: string
+        '400':
+          description: Requête mal formée.
+        '500':
+          description: Erreur interne du serveur.
+      operationId: get-ca
+      description: Opération qui permet au client de prendre connaissance des Autorités de Certification de confiance utilisées par la plateforme.
+  /asksignature/xades:
+    post:
+      summary: Signature au format Xades
+      operationId: post-asksignature-xades
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: erreur 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: erreur 401
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: erreur 415
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur
+        '503':
+          description: Service indisponible
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RichDocument'
+        required: true
+        description: Le document à signer au format XML.
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: access_token
+          required: true
+      tags:
+        - signature
+      description: Opération qui permet au client de demander de signer un document au format XADES Baseline-B.
+      security:
+        - PRO-SanteConnect: []
+    parameters: []
+  /asksignature/pades:
+    post:
+      summary: Signature au format Pades
+      operationId: post-askSignature-pades
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: erreur 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: erreur 401
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: erreur 415
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur
+        '503':
+          description: Service indisponible
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RichDocument'
+        required: true
+        description: Le document à signer au format PDF.
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: access_token
+          required: true
+      tags:
+        - signature
+      description: Opération qui permet au client de demander de signer un document au format PADES Baseline-B.
+      security:
+        - PRO-SanteConnect: []
+    parameters: []
+  /checksignature/xades:
+    post:
+      summary: Verification de signature au format Xades
+      operationId: post-checksignature-xades
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '400':
+          description: erreur 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur (vérifier que le document est au bon format XML).
+        '501':
+          description: L'opération n'est pas supportée par le serveur.
+        '503':
+          description: Service indisponible
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Document'
+        description: 'Le document à vérifier, il doit impérativement être au format XML.'
+      tags:
+        - checksignature
+      description: Opération qui permet au client de vérifier une signature au format XADES.
+  /checksignature/pades:
+    post:
+      summary: Vérification de signature au format Pades
+      operationId: post-checksignature-pades
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '400':
+          description: erreur 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur (vérifier que le document est au bon format PDF).
+        '501':
+          description: L'opération n'est pas supportée par le serveur.
+        '503':
+          description: Service indisponible
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Document'
+        description: Le document à vérifier au format PDF.
+      tags:
+        - checksignature
+      description: Opération qui permet au client de vérifier une signature au format PADES.
+components:
+  schemas:
+    Exercice:
+      description: ''
+      type: object
+      properties:
+        codeProfession:
+          type: string
+          minLength: 1
+        codeCategorieProfessionnelle:
+          type: string
+          minLength: 1
+        codeCiviliteDexercice:
+          type: string
+          minLength: 1
+        nomDexercice:
+          type: string
+          minLength: 1
+        prenomDexercice:
+          type: string
+          minLength: 1
+        codeTypeSavoirFaire:
+          type: string
+          minLength: 1
+        codeSavoirFaire:
+          type: string
+          minLength: 1
+        activities:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Activitie'
+    Activitie:
+      description: ''
+      type: object
+      properties:
+        codeModeExercice:
+          type: string
+          minLength: 1
+        codeSecteurDactivite:
+          type: string
+          minLength: 1
+        codeSectionPharmacien:
+          type: string
+          minLength: 1
+        codeRole:
+          type: string
+          minLength: 1
+        numeroSiretSite:
+          type: string
+          minLength: 1
+        numeroSirenSite:
+          type: string
+          minLength: 1
+        numeroFinessSite:
+          type: string
+          minLength: 1
+        numeroFinessetablissementJuridique:
+          type: string
+          minLength: 1
+        identifiantTechniqueDeLaStructure:
+          type: string
+          minLength: 1
+        raisonSocialeSite:
+          type: string
+          minLength: 1
+        enseigneCommercialeSite:
+          type: string
+          minLength: 1
+        complementDestinataire:
+          type: string
+          minLength: 1
+        complementPointGeographique:
+          type: string
+          minLength: 1
+        numeroVoie:
+          type: string
+          minLength: 1
+        indiceRepetitionVoie:
+          type: string
+          minLength: 1
+        codeTypeDeVoie:
+          type: string
+          minLength: 1
+        libelleVoie:
+          type: string
+          minLength: 1
+        mentionDistribution:
+          type: string
+          minLength: 1
+        bureauCedex:
+          type: string
+          minLength: 1
+        codePostal:
+          type: string
+          minLength: 1
+        codeCommune:
+          type: string
+          minLength: 1
+        codePays:
+          type: string
+          minLength: 1
+        telephone:
+          type: string
+          minLength: 1
+        telephone2:
+          type: string
+          minLength: 1
+        telecopie:
+          type: string
+          minLength: 1
+        adresseEMail:
+          type: string
+          minLength: 1
+        codeDepartement:
+          type: string
+          minLength: 1
+        ancienIdentifiantDeLaStructure:
+          type: string
+          minLength: 1
+        autoriteDenregistrement:
+          type: string
+          minLength: 1
+      title: ''
+    Operation:
+      type: object
+      description: Available operation
+      properties:
+        path:
+          type: string
+        description:
+          type: string
+        payload:
+          type: string
+        requiredHeaders:
+          type: string
+    Document:
+      title: Document
+      type: object
+      description: Document to sign (XML or PDF)
+      x-examples: {}
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+        - file
+    Error:
+      title: Error
+      type: object
+      description: Error object returned when signature validation fails
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    Result:
+      title: Result
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Résultat d'une vérification de signature.
+    SubjectRefPro:
+      description: ''
+      type: object
+      properties:
+        codeCivilite:
+          type: string
+          minLength: 1
+        exercices:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Exercice'
+    UserInfo:
+      description: ''
+      type: object
+      properties:
+        Secteur_Activite:
+          type: string
+          minLength: 1
+        sub:
+          type: string
+          minLength: 1
+        email_verified:
+          type: boolean
+        SubjectOrganization:
+          type: string
+          minLength: 1
+        Mode_Acces_Raison:
+          type: string
+          minLength: 1
+        preferred_username:
+          type: string
+          minLength: 1
+        given_name:
+          type: string
+          minLength: 1
+        Acces_Regulation_Medicale:
+          type: string
+          minLength: 1
+        UITVersion:
+          type: string
+          minLength: 1
+        Palier_Authentification:
+          type: string
+          minLength: 1
+        SubjectRefPro:
+          $ref: '#/components/schemas/SubjectRefPro'
+        SubjectOrganizationID:
+          type: string
+          minLength: 1
+        SubjectRole:
+          $ref: '#/components/schemas/SubjectRole'
+        PSI_Locale:
+          type: string
+          minLength: 1
+        SubjectNameID:
+          type: string
+          minLength: 1
+        family_name:
+          type: string
+          minLength: 1
+      required:
+        - SubjectOrganization
+        - preferred_username
+        - given_name
+        - family_name
+    SubjectRole:
+      title: SubjectRole
+      type: array
+      items:
+        type: string
+    RichDocument:
+      title: RichDocument
+      type: object
+      properties:
+        file:
+          description: Objet contenant le fichier ) signer et le UserInfo
+          type: string
+          format: binary
+        userinfo:
+          type: string
+      required:
+        - file
+  responses: {}
+  securitySchemes:
+    PRO-SanteConnect:
+      type: openIdConnect
+      description: ''
+      openIdConnectUrl: 'https://auth.esw.esante.gouv.fr/auth/realms/esante-wallet/.well-known/wallet-openid-configuration'
+    Pro-SanteConnect_BAS:
+      type: openIdConnect
+      openIdConnectUrl: 'https://auth.bas.esw.esante.gouv.fr/auth/realms/esante-wallet/.well-known/wallet-openid-configuration'
+  parameters: {}

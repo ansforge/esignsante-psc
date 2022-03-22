@@ -1,0 +1,346 @@
+= POC esignsante-psc 
+
+
+== Introduction
+Ce site est la documentation de l'API esignsante-psc extraite des tests.
+
+Pour tester l'API, vous pouvez utiliser swagger: +
+http://localhost:8080:/esignsante-psc/v1/swagger-ui/ +
+Ne pas oublier d'activer le profil 'swagger' au démarrage de Spring: 
+java -jar *-Dspring.profiles.active=swagger* esignsante-psc-0.0.13-SNAPSHOT.jar .../application.properties ...
+
+
+== Interrogation de l'API
+Liste des services exposés
+
+=== cas passant 200
+.request
+http:
+include::{snippets}/Liste_des_services/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/Liste_des_services/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/Liste_des_services/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/Liste_des_services/OK/http-response.adoc[]
+
+Payload:
+include::{snippets}/Liste_des_services/OK/response-body.adoc[]
+
+=== cas non passant 406
+Header 'accept' de la requête non supporté 
+
+
+http:
+include::{snippets}/Liste_des_services/KO_NotAcceptable/http-request.adoc[]
+
+httpIE:
+include::{snippets}/Liste_des_services/KO_NotAcceptable/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/Liste_des_services/KO_NotAcceptable/curl-request.adoc[]
+
+.response
+include::{snippets}/Liste_des_services/KO_NotAcceptable/http-response.adoc[]
+
+
+== Demande de la liste des Cas
+
+=== Cas passant 200
+.request
+include::{snippets}/CA/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/CA/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/CA/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/CA/OK/http-response.adoc[]
+
+payload:
+include::{snippets}/CA/OK/response-body.adoc[]
+
+=== cas non passant 406
+Header 'accept' de la requête non supporté 
+
+http:
+include::{snippets}/CA/KO_NotAcceptable/http-request.adoc[]
+
+httpIE:
+include::{snippets}/CA/KO_NotAcceptable/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/CA/KO_NotAcceptable/curl-request.adoc[]
+
+.response
+include::{snippets}/CA/KO_NotAcceptable/http-response.adoc[]
+
+
+=== cas non passant 503
+Le webservices 'esignsanteWebservices' n'est pas disponible
+
+http:
+include::{snippets}/CA/esginWS_OFF/http-request.adoc[]
+
+httpIE:
+include::{snippets}/CA/esginWS_OFF/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/CA/esginWS_OFF/curl-request.adoc[]
+
+.response
+include::{snippets}/CA/esginWS_OFF/http-response.adoc[]
+
+== Contrôle de signature XADES
+
+=== Cas passant 200
+.request
+include::{snippets}/checkSignXADES/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignXADES/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignXADES/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignXADES/OK/http-response.adoc[]
+
+payload:
+include::{snippets}/checkSignXADES/OK/response-body.adoc[]
+
+=== cas non passant-header accept invalide 406
+Header 'accept' de la requête non supporté 
+
+http:
+include::{snippets}/checkSignXADES/KO_NotAcceptable/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignXADES/KO_NotAcceptable/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignXADES/KO_NotAcceptable/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignXADES/KO_NotAcceptable/http-response.adoc[]
+
+=== Cas non passant 503
+Le webservices 'esignsanteWebservices' n'est pas disponible
+
+http:
+include::{snippets}/checkSignXADES/esginWS_OFF/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignXADES/esginWS_OFF/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignXADES/esginWS_OFF/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignXADES/esginWS_OFF/http-response.adoc[]
+
+
+=== Cas non passant 501
+Service non implémenté. Une cause possible est que le fichier signé à contrôler n'est pas un fichier xml signé en XADES.
+
+.request
+http:
+include::{snippets}/checkSignXADES/BadFileFormat/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignXADES/BadFileFormat/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignXADES/BadFileFormat/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignXADES/BadFileFormat/http-response.adoc[]
+
+
+== Contrôle de signature PADES
+
+=== Cas passant 200
+.request
+include::{snippets}/checkSignPADES/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignPADES/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignPADES/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignPADES/OK/http-response.adoc[]
+
+payload:
+include::{snippets}/checkSignPADES/OK/response-body.adoc[]
+
+=== cas non passant-header accept invalide 406
+Header 'accept' de la requête non supporté 
+
+http:
+include::{snippets}/checkSignPADES/KO_NotAcceptable/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignPADES/KO_NotAcceptable/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignPADES/KO_NotAcceptable/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignPADES/KO_NotAcceptable/http-response.adoc[]
+
+=== Cas non passant 503
+Le webservices 'esignsanteWebservices' n'est pas disponible
+
+http:
+include::{snippets}/checkSignPADES/esginWS_OFF/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignPADES/esginWS_OFF/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignPADES/esginWS_OFF/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignPADES/esginWS_OFF/http-response.adoc[]
+
+
+=== Cas non passant 501
+Service non implémenté. Une cause possible est que le fichier signé à contrôler n'est pas un fichier pdf signé en PADES.
+
+
+.request
+http:
+include::{snippets}/checkSignPADES/BadFileFormat/http-request.adoc[]
+
+httpIE:
+include::{snippets}/checkSignPADES/BadFileFormat/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/checkSignPADES/BadFileFormat/curl-request.adoc[]
+
+.response
+include::{snippets}/checkSignPADES/BadFileFormat/http-response.adoc[]
+
+== Demande de signature XADES
+
+=== cas passant 200
+.request
+http:
+include::{snippets}/signXADES/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/signXADES/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/signXADES/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/signXADES/OK/http-response.adoc[]
+
+Payload:
+include::{snippets}/signXADES/OK/response-body.adoc[]
+
+=== Cas non passant 401 (token non actif)
+L'access Token fourni dans la requête n'est plus vu comme un token actif par ProSanteConnect
+
+.request
+include::{snippets}/signXADES/TokenKo/http-request.adoc[]
+
+payload:
+include::{snippets}/signXADES/TokenKo/request-body.adoc[]
+
+
+.response
+include::{snippets}/signXADES/TokenKo/http-response.adoc[]
+
+
+=== Cas non passant 503 (WS OFF)
+Le webservices 'esignsanteWebservices' n'est pas disponible
+
+http:
+include::{snippets}/signXADES/esginWS_OFF/http-request.adoc[]
+
+httpIE:
+include::{snippets}/signXADES/esginWS_OFF/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/signXADES/esginWS_OFF/curl-request.adoc[]
+
+.response
+include::{snippets}/signXADES/esginWS_OFF/http-response.adoc[]
+
+
+
+== Demande de signature PADES
+
+=== cas passant 200
+.request
+http:
+include::{snippets}/signPADES/OK/http-request.adoc[]
+
+httpIE:
+include::{snippets}/signPADES/OK/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/signPADES/OK/curl-request.adoc[]
+
+.response
+include::{snippets}/signPADES/OK/http-response.adoc[]
+
+Payload:
+include::{snippets}/signPADES/OK/response-body.adoc[]
+
+=== Cas non passant 401 (token non actif)
+L'access Token fourni dans la requête n'est plus vu comme un token actif par ProSanteConnect
+
+.request
+include::{snippets}/signPADES/TokenKo/http-request.adoc[]
+
+payload:
+include::{snippets}/signPADES/TokenKo/request-body.adoc[]
+
+
+.response
+include::{snippets}/signPADES/TokenKo/http-response.adoc[]
+
+=== Cas non passant 415 (fichier non pdf)
+Le fichier à signer fourni n'est pas reconnu comme un fichier PDF.
+
+.request
+include::{snippets}/signPADES/BadFileFormat/http-request.adoc[]
+
+payload:
+include::{snippets}/signPADES/BadFileFormat/request-body.adoc[]
+
+
+.response
+include::{snippets}/signPADES/BadFileFormat/http-response.adoc[]
+
+
+=== Cas non passant 503 (WS OFF)
+Le webservices 'esignsanteWebservices' n'est pas disponible
+
+http:
+include::{snippets}/signPADES/esginWS_OFF/http-request.adoc[]
+
+httpIE:
+include::{snippets}/signPADES/esginWS_OFF/httpie-request.adoc[]
+
+Requête avec curl:
+include::{snippets}/signPADES/esginWS_OFF/curl-request.adoc[]
+
+.response
+include::{snippets}/signPADES/esginWS_OFF/http-response.adoc[]
+
+
+
+
+
+
