@@ -22,7 +22,7 @@
 	<description>webservice REST de signature à partir d'un jeton prosante connect</description>
 	<properties>
 		<springfox-version>3.0.0</springfox-version>
-		<jackson-version>2.12.3</jackson-version>
+		<jackson-version>2.12.7.1</jackson-version>
 		<start-class>fr.ans.sign.esignsantepsc.EsignsantePscApplication</start-class>
 		<dist>docker</dist>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
